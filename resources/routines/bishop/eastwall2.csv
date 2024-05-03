@@ -1,0 +1,41 @@
+$, target=move_tolerance, value=0.05
+
+@, label=left_bot_place
+*, x=0.4, y=0.3, frequency=15, skip=False, adjust=True
+    FountainOfVengeance
+
+@, label=left_top_place
+*, x=0.30, y=0.2, frequency=15, skip=False, adjust=True
+    ErdaShower
+
+@, label=right_top
+*, x=0.72, y=0.2, frequency=1, skip=False, adjust=False
+    BigBang, repetitions=5
+
+@, label=right_bot
+*, x=0.72, y=0.3, frequency=1, skip=False, adjust=False
+    PeaceMaker
+    Genesis
+    HeavensDoor
+    BigBang, repetitions=3
+>, label=loot, frequency=1, skip=False
+
+@, label=loot
+*, x=0.62, y=0.107, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.8, y=0.107, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.8, y=0.367, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.64, y=0.367, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.48, y=0.367, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.3, y=0.367, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.12, y=0.367, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.2, y=0.107, frequency=15, skip=False, adjust=False
+    Wait, duration=1
+*, x=0.3, y=0.107, frequency=15, skip=False, adjust=False
+    Wait, duration=1
