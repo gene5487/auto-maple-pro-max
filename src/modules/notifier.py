@@ -78,7 +78,7 @@ class Notifier:
         self.thread.daemon = True
 
         self.room_change_threshold = 0.9
-        self.rune_alert_delay = 270         # 4.5 minutes
+        self.rune_alert_delay = 120
 
     def start(self):
         """Starts this Notifier's thread."""
@@ -109,6 +109,7 @@ class Notifier:
                 if len(fiona_lie_detector) > 0:
                     print("find fiona_lie_detector")
                     line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現菲歐娜測謊')
+                    line_screenshot(file_name='./screenshot_fiona_lie_detector.png')
                     self._alert('siren')
                     time.sleep(0.1)
 
@@ -136,6 +137,7 @@ class Notifier:
                         config.bot.rune_solved = False
                         self._ping('MH-Item Found')
                         line_notify(f'{datetime.now().strftime("%H:%M:%S")} 符文已解')
+                        line_screenshot(file_name='./screenshot_rune_solved.png')
 
                     filtered = utils.filter_color(minimap, RUNE_RANGES)
                     matches = utils.multi_match(filtered, RUNE_TEMPLATE, threshold=0.9)
@@ -149,6 +151,7 @@ class Notifier:
                         config.bot.rune_active = True
                         self._ping('rune_appeared', volume=0.75)
                         line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現符文')
+                        line_screenshot(file_name='./screenshot_rune_appeared.png')
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')
