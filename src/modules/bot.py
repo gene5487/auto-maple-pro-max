@@ -37,6 +37,7 @@ class Bot(Configurable):
         config.bot = self
 
         self.rune_active = False
+        self.rune_solved = False
         self.rune_pos = (0, 0)
         self.rune_closest_pos = (0, 0)      # Location of the Point closest to rune
         self.submodules = []
@@ -61,7 +62,7 @@ class Bot(Configurable):
         :return:    None
         """
 
-        self.update_submodules()
+        # self.update_submodules()
         print('\n[~] Started main bot loop')
         self.thread.start()
 
@@ -96,8 +97,7 @@ class Bot(Configurable):
 
                 # Execute next Point in the routine
                 element = config.routine[config.routine.index]
-                if self.rune_active and isinstance(element, Point) \
-                        and element.location == self.rune_closest_pos:
+                if self.rune_active and isinstance(element, Point):  # and element.location == self.rune_closest_pos:
                     self._solve_rune(model)
                 element.execute()
                 config.routine.step()
@@ -145,10 +145,13 @@ class Bot(Configurable):
                                 round(rune_buff_pos[1] + config.capture.window['top'])
                             )
                             click(target, button='right')
+                            self.rune_solved = True
                     self.rune_active = False
                     break
                 elif len(solution) == 4:
                     inferences.append(solution)
+            else:
+                print('No solution found')
 
     def load_commands(self, file):
         try:

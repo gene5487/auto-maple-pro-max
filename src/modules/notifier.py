@@ -10,6 +10,37 @@ import numpy as np
 import keyboard as kb
 from src.routine.components import Point
 
+###### Line Notify ######
+import requests
+from datetime import datetime
+import pyautogui
+
+token = 'sfTw20yT1dCARQtnJvsIg9LVmFPOHeiW74pl92ziLLf'  # 填入你的token
+url = 'https://notify-api.line.me/api/notify'
+headers = {
+    'Authorization': 'Bearer ' + token
+}
+
+
+def line_notify(msg):
+    data = {
+        'message': msg
+    }
+    requests.post(url, headers=headers, data=data)
+
+
+def line_screenshot(file_name='./screenshot.png'):
+    data = {
+        'message': f'{datetime.now().strftime("%H:%M:%S")} 截圖:'
+    }
+    pyautogui.screenshot().save(file_name)
+    image = open(file_name, 'rb')
+    files = {'imageFile': image}
+    requests.post(url, headers=headers, data=data, files=files)
+
+
+# fiona_lie_detector image
+FIONA_LIE_DETECTOR_TEMPLATE = cv2.imread('assets/fiona_lie_detector.png', 0)
 
 # A rune's symbol on the minimap
 RUNE_RANGES = (
@@ -69,12 +100,25 @@ class Notifier:
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 if np.count_nonzero(gray < 15) / height / width > self.room_change_threshold:
                     self._alert('siren')
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現黑畫面')
+                    line_screenshot(file_name='./screenshot_black_screen.png')
+
+                # check for fiona_lie_detector, copied from: https://github.com/sean820117/auto-maple/blob/f97116cf97426b5847e73d3185ca39e3bfc74eda/src/modules/notifier.py#L122
+                fiona_frame = frame[height - 400:height, width - 300:width]
+                fiona_lie_detector = utils.multi_match(fiona_frame, FIONA_LIE_DETECTOR_TEMPLATE, threshold=0.9)
+                if len(fiona_lie_detector) > 0:
+                    print("find fiona_lie_detector")
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現菲歐娜測謊')
+                    self._alert('siren')
+                    time.sleep(0.1)
 
                 # Check for elite warning
                 elite_frame = frame[height // 4:3 * height // 4, width // 4:3 * width // 4]
                 elite = utils.multi_match(elite_frame, ELITE_TEMPLATE, threshold=0.9)
                 if len(elite) > 0:
                     self._alert('siren')
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現精英警告')
+                    line_screenshot(file_name='./screenshot_elite_warning.png')
 
                 # Check for other players entering the map
                 filtered = utils.filter_color(minimap, OTHER_RANGES)
@@ -88,6 +132,11 @@ class Notifier:
                 # Check for rune
                 now = time.time()
                 if not config.bot.rune_active:
+                    if config.bot.rune_solved:
+                        config.bot.rune_solved = False
+                        self._ping('MH-Item Found')
+                        line_notify(f'{datetime.now().strftime("%H:%M:%S")} 符文已解')
+
                     filtered = utils.filter_color(minimap, RUNE_RANGES)
                     matches = utils.multi_match(filtered, RUNE_TEMPLATE, threshold=0.9)
                     rune_start_time = now
@@ -99,9 +148,12 @@ class Notifier:
                         config.bot.rune_closest_pos = config.routine[index].location
                         config.bot.rune_active = True
                         self._ping('rune_appeared', volume=0.75)
+                        line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現符文')
                 elif now - rune_start_time > self.rune_alert_delay:     # Alert if rune hasn't been solved
                     config.bot.rune_active = False
                     self._alert('siren')
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 符文未解')
+                    line_screenshot(file_name='./screenshot_rune_unsolved.png')
             time.sleep(0.05)
 
     def _alert(self, name, volume=0.75):

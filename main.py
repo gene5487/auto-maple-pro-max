@@ -6,6 +6,7 @@ from src.modules.capture import Capture
 from src.modules.notifier import Notifier
 from src.modules.listener import Listener
 from src.modules.gui import GUI
+import tensorflow as tf
 
 
 bot = Bot()
