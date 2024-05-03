@@ -1,3 +1,32 @@
+# Additional Features of This Fork
+
+1. Alerting when detecting the Fiona anti-cheat minigame.
+2. Modified condition for triggering Rune removal: even if not the nearest point to the Rune location, the character will still move to remove it.
+3. Notification upon successfully removing a Rune.
+4. Added Line notify functionality (see "How to Set Up Line Notify") to send messages and screenshots via Line notify for the following events:
+   - Detection of black screen
+   - Detection of the Fiona anti-cheat minigame
+   - Appearance of Elite Boss
+   - Detection of Rune
+   - Successful removal of Rune
+   - Long delay in removing Rune
+
+# How to Set Up Line Notify
+
+1. Please refer to [this link](https://steam.oxxostudio.tw/category/python/spider/line-notify.html) to obtain your token for Line notify.
+2. Then, modify the `token` variable in `auto-maple-pro-max\src\modules\notifier.py` as follows:
+
+```python
+token = '......'  # Replace ...... with your token
+```
+
+# Screenshot Demo
+![擷取](https://github.com/gene5487/auto-maple-pro-max/assets/58682521/a3d37038-f513-4f6b-a225-3e69e4b999de)
+
+
+<br>
+
+
 <h1 align="center">
   Auto Maple
 </h1>
