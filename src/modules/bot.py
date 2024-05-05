@@ -145,7 +145,7 @@ class Bot(Configurable):
                                 round(rune_buff_pos[1] + config.capture.window['top'])
                             )
                             click(target, button='right')
-                            self.rune_solved = True
+                    self.rune_solved = True
                     self.rune_active = False
                     break
                 elif len(solution) == 4:

@@ -43,3 +43,10 @@ listener = None
 
 # Shares the gui to all modules
 gui = None
+
+###### Line Notify ######
+token = 'sfTw20yT1dCARQtnJvsIg9LVmFPOHeiW74pl92ziLLf'  # 填入你的token
+url = 'https://notify-api.line.me/api/notify'
+headers = {
+    'Authorization': 'Bearer ' + token
+}

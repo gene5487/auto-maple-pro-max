@@ -15,18 +15,12 @@ import requests
 from datetime import datetime
 import pyautogui
 
-token = 'sfTw20yT1dCARQtnJvsIg9LVmFPOHeiW74pl92ziLLf'  # 填入你的token
-url = 'https://notify-api.line.me/api/notify'
-headers = {
-    'Authorization': 'Bearer ' + token
-}
-
 
 def line_notify(msg):
     data = {
         'message': msg
     }
-    requests.post(url, headers=headers, data=data)
+    requests.post(config.url, headers=config.headers, data=data)
 
 
 def line_screenshot(file_name='./screenshot.png'):
@@ -36,8 +30,11 @@ def line_screenshot(file_name='./screenshot.png'):
     pyautogui.screenshot().save(file_name)
     image = open(file_name, 'rb')
     files = {'imageFile': image}
-    requests.post(url, headers=headers, data=data, files=files)
+    requests.post(config.url, headers=config.headers, data=data, files=files)
 
+
+# bounty_portals_template image
+BOUNTY_PORTALS_TEMPLATE = cv2.imread('assets/bounty_portals_template.png', 0)
 
 # fiona_lie_detector image
 FIONA_LIE_DETECTOR_TEMPLATE = cv2.imread('assets/fiona_lie_detector.png', 0)
@@ -103,7 +100,7 @@ class Notifier:
                     line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現黑畫面')
                     line_screenshot(file_name='./screenshot_black_screen.png')
 
-                # check for fiona_lie_detector, copied from: https://github.com/sean820117/auto-maple/blob/f97116cf97426b5847e73d3185ca39e3bfc74eda/src/modules/notifier.py#L122
+                # Check for fiona_lie_detector, copied from: https://github.com/sean820117/auto-maple/blob/f97116cf97426b5847e73d3185ca39e3bfc74eda/src/modules/notifier.py#L122
                 fiona_frame = frame[height - 400:height, width - 300:width]
                 fiona_lie_detector = utils.multi_match(fiona_frame, FIONA_LIE_DETECTOR_TEMPLATE, threshold=0.9)
                 if len(fiona_lie_detector) > 0:
@@ -112,6 +109,14 @@ class Notifier:
                     line_screenshot(file_name='./screenshot_fiona_lie_detector.png')
                     self._alert('siren')
                     time.sleep(0.1)
+
+                # Check for bounty portals
+                filtered = utils.filter_color(minimap, RUNE_RANGES)
+                matches = utils.multi_match(filtered, BOUNTY_PORTALS_TEMPLATE, threshold=0.9)
+                if matches:
+                    self._ping('MH-Combine Item')
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現賞金獵人傳送們')
+                    line_screenshot(file_name='./screenshot_bounty_portals.png')
 
                 # Check for elite warning
                 elite_frame = frame[height // 4:3 * height // 4, width // 4:3 * width // 4]
