@@ -111,11 +111,10 @@ class Notifier:
                     time.sleep(0.1)
 
                 # Check for bounty portals
-                filtered = utils.filter_color(minimap, RUNE_RANGES)
-                matches = utils.multi_match(filtered, BOUNTY_PORTALS_TEMPLATE, threshold=0.9)
-                if matches:
+                matches = utils.multi_match(minimap, BOUNTY_PORTALS_TEMPLATE, threshold=0.9)
+                if len(matches) > 0:
                     self._ping('MH-Combine Item')
-                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現賞金獵人傳送們')
+                    line_notify(f'{datetime.now().strftime("%H:%M:%S")} 發現賞金獵人傳送門')
                     line_screenshot(file_name='./screenshot_bounty_portals.png')
 
                 # Check for elite warning

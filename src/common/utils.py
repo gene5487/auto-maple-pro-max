@@ -257,3 +257,14 @@ def async_callback(context, function, *args, **kwargs):
         task.start()
         context.after(100, task.process_queue(context))
     return f
+
+
+def get_hsv_range(image_path):
+    # 讀取圖片
+    img = cv2.imread(image_path)
+    # 將圖片從BGR轉換到HSV
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    # 找到HSV圖片中的最小和最大值
+    min_hue, min_saturation, min_value = np.min(hsv, axis=(0, 1))
+    max_hue, max_saturation, max_value = np.max(hsv, axis=(0, 1))
+    return (min_hue, min_saturation, min_value), (max_hue, max_saturation, max_value)
